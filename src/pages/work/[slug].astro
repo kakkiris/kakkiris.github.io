@@ -1,0 +1,88 @@
+---
+// Case study pages. Cases with a written body use the full template; the rest show a
+// placeholder until step 4.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CaseLayout from "../../layouts/CaseLayout.astro";
+import CedarPeak from "../../content/cases/CedarPeak.astro";
+import ApAutomation from "../../content/cases/ApAutomation.astro";
+import FlexOps from "../../content/cases/FlexOps.astro";
+import AuditOs from "../../content/cases/AuditOs.astro";
+import FromTheUniverse from "../../content/cases/FromTheUniverse.astro";
+import TeamForge from "../../content/cases/TeamForge.astro";
+import { CASES, type CaseSlug } from "../../data/cases";
+
+export function getStaticPaths() {
+  return Object.keys(CASES).map((slug) => ({ params: { slug } }));
+}
+
+const BODIES: Partial<Record<CaseSlug, typeof CedarPeak>> = {
+  "cedar-peak": CedarPeak,
+  "ap-automation": ApAutomation,
+  "flexops-ai": FlexOps,
+  "audit-os": AuditOs,
+  "from-the-universe": FromTheUniverse,
+  teamforge: TeamForge,
+};
+const slug = Astro.params.slug as CaseSlug;
+const c = CASES[slug];
+const Body = BODIES[slug];
+---
+
+{
+  Body ? (
+    <CaseLayout slug={slug} short={slug === "teamforge"}>
+      <Body />
+    </CaseLayout>
+  ) : (
+    <BaseLayout title={`${c.title}, Kerem Akkiris`} description={c.summary}>
+      <article class="wrap placeholder-case">
+        <a class="back text-link" href="/#work" data-lens-link>
+          All work
+        </a>
+        <p class="context">{c.context}</p>
+        <h1 style={`view-transition-name: case-${c.slug}`}>{c.title}</h1>
+        <p class="summary">{c.summary}</p>
+        <p class="placeholder">Placeholder for review. This case study is written in step 4.</p>
+      </article>
+    </BaseLayout>
+  )
+}
+
+<style>
+  .placeholder-case {
+    display: grid;
+    gap: 16px;
+    padding-top: 64px;
+    padding-bottom: 120px;
+  }
+  .placeholder-case > * {
+    max-width: 680px;
+  }
+  .back {
+    justify-self: start;
+    margin-bottom: 32px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .context {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  h1 {
+    font: 400 clamp(2.5rem, 1.6rem + 3.6vw, 4rem) / 1.05 var(--serif);
+    font-optical-sizing: auto;
+    letter-spacing: -0.017em;
+  }
+  .summary {
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+  .placeholder {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    font-size: 14px;
+    color: var(--muted);
+  }
+</style>

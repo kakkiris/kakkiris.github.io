@@ -1,0 +1,42 @@
+---
+interface Props {
+  title: string;
+  /** Marks the "what I chose not to build" entry */
+  notBuilt?: boolean;
+}
+const { title, notBuilt = false } = Astro.props;
+---
+
+<div class:list={["decision", { "not-built": notBuilt }]}>
+  <h3>{notBuilt && <span class="label">Not built</span>}{title}</h3>
+  <slot />
+</div>
+
+<style>
+  .decision {
+    padding: 20px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .decision:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  h3 {
+    margin-bottom: 8px;
+    font: 400 21px/1.3 var(--serif);
+    font-optical-sizing: auto;
+  }
+  .label {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 2px 8px;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    color: var(--accent);
+    font: 500 12px/1.4 var(--sans);
+    vertical-align: 3px;
+  }
+  .decision :global(p + p) {
+    margin-top: 12px;
+  }
+</style>

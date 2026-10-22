@@ -1,0 +1,93 @@
+---
+import { CV_URL } from "../data/site";
+
+const path = Astro.url.pathname;
+---
+
+<header class="wrap" style="view-transition-name: site-header">
+  <div class="site-header">
+  <a class="name" href="/" aria-current={path === "/" ? "page" : undefined}>Kerem Akkiris</a>
+  <div class="header-end">
+    <nav aria-label="Main">
+      <a href="/#work" data-lens-link>Work</a>
+      <a href="/about" aria-current={path === "/about" ? "page" : undefined}>About</a>
+      <a href={CV_URL}>CV</a>
+    </nav>
+    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark theme">
+      <svg class="icon-moon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M13.5 9.6A5.75 5.75 0 0 1 6.4 2.5a5.75 5.75 0 1 0 7.1 7.1Z" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linejoin="round"></path>
+      </svg>
+      <svg class="icon-sun" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.25"></circle>
+        <path d="M8 1.25v1.5M8 13.25v1.5M1.25 8h1.5M13.25 8h1.5M3.2 3.2l1.06 1.06M11.74 11.74l1.06 1.06M3.2 12.8l1.06-1.06M11.74 4.26l1.06-1.06" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"></path>
+      </svg>
+    </button>
+  </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .name {
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.005em;
+    text-decoration: none;
+  }
+  .header-end {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  nav {
+    display: flex;
+    gap: 24px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  nav a {
+    text-decoration: none;
+    transition: color var(--t-press) var(--ease);
+  }
+  nav a:hover,
+  nav a[aria-current="page"] {
+    color: var(--ink);
+  }
+  .theme-toggle {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition:
+      color var(--t-press) var(--ease),
+      border-color var(--t-press) var(--ease);
+  }
+  .theme-toggle:hover {
+    color: var(--ink);
+    border-color: var(--muted);
+  }
+  .icon-moon {
+    display: var(--show-moon);
+  }
+  .icon-sun {
+    display: var(--show-sun);
+  }
+  @media (max-width: 480px) {
+    .header-end,
+    nav {
+      gap: 16px;
+    }
+  }
+</style>

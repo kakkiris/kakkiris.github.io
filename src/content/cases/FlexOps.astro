@@ -1,0 +1,184 @@
+---
+// FlexOps AI. Every number and quote carries a source label (README = the public repository
+// README; DA = asset management discovery transcript; VAL = validation walkthrough
+// transcript; AR = audit report; SOW = draft scope of work; PROCESS = app/*/process.md in
+// the public repo). The label to file map is kept outside the repo.
+import CaseSection from "../../components/case/CaseSection.astro";
+import Shot from "../../components/case/Shot.astro";
+import Stats from "../../components/case/Stats.astro";
+import Quote from "../../components/case/Quote.astro";
+import Decision from "../../components/case/Decision.astro";
+import workflowPanel from "../../assets/work/flexops-ai/workflow-panel.png";
+import leaseAbstract from "../../assets/work/flexops-ai/lease-abstract.png";
+---
+
+<CaseSection id="context" standfirst="A flex industrial operator whose portfolio grew on top of Excel, email and Yardi.">
+  <p>
+    The client owns and runs a few dozen multi-tenant flex warehouse properties, with units of 1,000 to 5,000 square
+    feet leased to contractors, e-commerce and light manufacturing tenants. The portfolio grew on top of Excel, email and
+    its property system, Yardi.
+  </p>
+  <dl class="users">
+    <div><dt>Acquisitions</dt><dd>Source deals and build underwriting models from broker memoranda.</dd></div>
+    <div><dt>Leasing</dt><dd>Qualify inbound inquiries and sign new leases.</dd></div>
+    <div><dt>Accounting</dt><dd>Owns data entry into Yardi, lease by lease.</dd></div>
+    <div><dt>Asset management</dt><dd>Prepares the portfolio files for the weekly asset management meeting.</dd></div>
+  </dl>
+</CaseSection>
+
+<CaseSection
+  id="problem"
+  standfirst="High-value documents arrived as PDFs and were re-keyed by hand, and the knowledge inside them was hard to query later."
+>
+  <p>
+    Broker memoranda, leases and closing rent rolls arrived as PDFs and were typed into spreadsheets and Yardi by hand.
+    A new lease meant one person working through five steps in Yardi, and at every acquisition each inherited lease was
+    keyed in one at a time.
+  </p>
+  <Stats
+    items={[
+      { value: "15+ minutes", label: "to key a complex lease into Yardi by hand, with escalation errors slipping through unbilled", source: "PROCESS:lease-abstraction:12" },
+      { value: "5 steps", label: "in Yardi for every new lease: lease record, billing contact, unit, charge schedules, activation", source: "PROCESS:lease-abstraction" },
+      { value: "6 tables", label: "a closing rent roll has to fill in Yardi when a portfolio is bought", source: "README:18" },
+    ]}
+  />
+  <p>
+    Discovery also showed where the portfolio reporting strained. This evidence fed the reporting work scoped after
+    validation, not the five demos.
+  </p>
+  <Quote by="The portfolio analyst" where="discovery interview, May 2026" source="DA:02:58">
+    There's so many formulas here that keeping a lot of additional information really slows down Excel.
+  </Quote>
+  <Quote by="The client's project sponsor, relaying the analyst" where="discovery interview, May 2026" source="DA:31:32">
+    I can't open all these spreadsheets because it'll crash my computer.
+  </Quote>
+</CaseSection>
+
+<CaseSection id="research" standfirst="Two discovery interviews, recorded and studied, then a validation walkthrough that cut a demo.">
+  <ul>
+    <li>
+      A colleague ran two discovery interviews in May 2026, with the client's project sponsor present. I worked from the
+      recordings of every call and screen share.
+    </li>
+    <li>Questionnaires, a pre-audit document and written feedback filled in the gaps.</li>
+    <li>
+      On 4 June 2026 I led the validation walkthrough of the demos with the client, then wrote the post-validation
+      spec that changed them.
+    </li>
+  </ul>
+</CaseSection>
+
+<CaseSection
+  id="decisions"
+  standfirst="Build trust into every field, show today beside tomorrow, keep extraction offline, and cut what does not drive the process."
+>
+  <Decision title="Trust is built in">
+    <p>
+      Every extracted field carries a confidence level with a reason. Rent comps carry the page and the quote they came
+      from, and lease answers cite the sections they draw on, so reviewers verify instead of re-keying.
+    </p>
+  </Decision>
+  <Decision title="Today beside tomorrow">
+    <p>
+      Each demo shows today's workflow next to the proposed one on the same screen. In the leasing demo both versions
+      stay runnable behind a toggle: the chat version the client first declined came back when they warmed to it at
+      validation.
+    </p>
+  </Decision>
+  <Decision title="Extraction runs once, offline">
+    <p>
+      Documents are read once and the demo seeds from the results, so it is reproducible and costs nothing to run. The
+      acquisition bulk-load uses no model at all: the rent roll fans out into Yardi's tables by fixed rules.
+    </p>
+  </Decision>
+  <Decision title="A property onboarding checklist" notBuilt>
+    <p>
+      Dropped after the validation walkthrough. The deal process is owned by people and hard to predict, so a checklist
+      can help but cannot drive it.
+    </p>
+    <Quote by="The operator's acquisitions lead" where="validation walkthrough, June 2026" source="VAL:27:33">
+      The checklist is helpful for us, but that's not what drives the process.
+    </Quote>
+  </Decision>
+  <Decision title="A voice cold-calling agent" notBuilt>
+    <p>Removed earlier, at the client's request, before the demo build.</p>
+  </Decision>
+</CaseSection>
+
+<CaseSection id="solution" standfirst="Five working prototypes across acquisitions and leasing, built on one app.">
+  <ul>
+    <li><strong>Market intelligence.</strong> Broker memoranda are read once; their units become searchable comps with confidence scores and page citations, feeding a first-pass underwriting view.</li>
+    <li><strong>Lease Q&amp;A.</strong> Plain-language questions over the lease library, with cited answers.</li>
+    <li><strong>Lease abstraction.</strong> Upload a signed lease and get an editable, confidence-flagged abstract, ready to paste into Yardi. Text PDFs and scanned leases take different paths.</li>
+    <li><strong>Acquisition bulk-load.</strong> A closing rent roll fans out into the six linked Yardi tables in one load.</li>
+    <li><strong>Lead qualification.</strong> A structured intake form, or a conversational chat, qualifies a leasing inquiry and matches available units.</li>
+  </ul>
+  <Shot
+    n={1}
+    src={workflowPanel}
+    alt="A panel headed How this changes the workflow. Today: one person types each lease field into Yardi through five steps. With the demo: the fields are extracted from the signed PDF, accounting reviews the confidence-flagged ones and approves."
+    caption="Every demo opens with today's workflow beside the proposed one."
+    notes={[
+      { x: 1.6, y: 21, text: "Today, in the team's terms: five manual steps, every field typed from the PDF." },
+      { x: 50.4, y: 21, text: "With the demo: fields extracted in under a minute, and a person still reviews and approves." },
+    ]}
+  />
+  <Shot
+    n={2}
+    size="narrow"
+    src={leaseAbstract}
+    alt="A lease abstract with a text path badge, a pushed to Yardi badge, a Push to Yardi button and a link to ask the lease Q and A about this lease. Each field, from tenant to security deposit, carries a HIGH confidence badge."
+    caption="Lease abstraction. Every field carries its confidence level."
+    notes={[
+      { x: 88, y: 4, text: "The badges show the extraction path, text PDF here or a vision path for scanned leases, and whether it has been pushed." },
+      { x: 79.4, y: 16.3, text: "Every field carries a confidence level, so a reviewer checks the doubtful ones first." },
+      { x: 80, y: 8.2, text: "Paste-ready for Yardi, pushed by a person; the lease can be questioned in the Q&A demo." },
+    ]}
+  />
+  <h3>Architecture notes</h3>
+  <ul>
+    <li>One Next.js app with SQLite through Drizzle and a single Anthropic client.</li>
+    <li>Claude Sonnet 4.6 by default; Claude Opus 4.7 for lease abstraction, including scanned leases.</li>
+    <li>Structured output: every model reply is checked against a schema before anything is stored.</li>
+    <li>If a PDF's first page has under 200 characters of text, it goes to Claude's native PDF input instead of a separate OCR step.</li>
+    <li>Lease Q&amp;A uses keyword search in SQLite, not embeddings, and says so when the library has no answer.</li>
+    <li>
+      Confidence and citations are stored with each comp and each abstract.
+      <a href="https://github.com/kakkiris/flex-industrial-ai-demo">The code is on GitHub</a>.
+    </li>
+  </ul>
+</CaseSection>
+
+<CaseSection id="outcome" standfirst="Three demos recommended for a first phase, a draft scope of work, and three reporting tracks scoped.">
+  <p>
+    The audit recommended three of the five demos for a first phase: lease abstraction, the acquisition bulk-load and
+    lease Q&amp;A. A draft scope of work followed; it has not been signed.
+  </p>
+  <p>
+    After validation, the asset management evidence became three scoped reporting tracks: portfolio absorption
+    reporting, historical operating performance, and a website-to-Yardi vacancy sync. None was built.
+  </p>
+</CaseSection>
+
+<CaseSection id="learned" standfirst="More automation is not always the better fit; keep the rejected version runnable.">
+  <p>
+    More automation is not always the better fit. The checklist was upgraded on paper into an orchestration agent, and
+    the client declined it because a checklist does not drive their deals.
+  </p>
+  <p>
+    Keep the rejected version runnable. The chat the client first turned down stayed behind a toggle, and at
+    validation they came round to it.
+  </p>
+</CaseSection>
+
+<CaseSection id="role" standfirst="Specs, product calls, the build and the validation walkthrough; a colleague ran discovery.">
+  <div class="readme">
+    <p>
+      I worked from the recordings of every discovery call, turned what I heard into demo specs with acceptance
+      criteria, made the product calls during the build, directed Claude Code through each build session, and led the
+      validation walkthrough with the client. A colleague ran the discovery calls and wrote the synthesis the specs drew
+      on.
+    </p>
+    <p class="note">From the repository README, word for word.</p>
+  </div>
+</CaseSection>

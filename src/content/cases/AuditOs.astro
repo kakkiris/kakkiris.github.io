@@ -1,0 +1,172 @@
+---
+// Audit OS. Sources (label to file map kept outside the repo, because the paths carry client
+// names): N8N = the first automated version's architecture summary and agent prompts (Nov
+// 2025); OP = the one-pager; DS = Discovery Synthesis v0.1; BP = Build Plan v1.1, sections
+// 0 to 6; ST = the build status log (30 July to 1 August 2026).
+import CaseSection from "../../components/case/CaseSection.astro";
+import Stats from "../../components/case/Stats.astro";
+import Decision from "../../components/case/Decision.astro";
+import Diagram from "../../components/case/Diagram.astro";
+import { firstVersion, redesign } from "../../data/diagrams";
+---
+
+<CaseSection id="context" standfirst="Monk AI Group runs AI audits for clients; every audit asset was written by hand from the same transcripts.">
+  <p>
+    An audit at Monk AI Group runs department by department: discovery calls, then findings, solution ideas, ROI, a
+    report, a deck, a scope of work and demos. Every one of those assets was written by hand, mostly by the delivery
+    lead and me, from the same raw transcripts. In the audits themselves I asked the quantitative questions on calls,
+    came up with solutions, built the demos and the deck, and presented the validation.
+  </p>
+  <dl class="users">
+    <div><dt>Delivery lead</dt><dd>Reviews drafts and signs off each ROI figure.</dd></div>
+    <div><dt>Sign-off reviewer</dt><dd>Approves what goes to the client.</dd></div>
+    <div><dt>Me</dt><dd>Admin, architect and demo owner.</dd></div>
+    <div><dt>Development team</dt><dd>Reads the spec packs for each chosen solution.</dd></div>
+  </dl>
+</CaseSection>
+
+<CaseSection id="problem" standfirst="Numbers lived in prose across many documents and drifted apart.">
+  <p>
+    When a new call or a correction arrived, someone had to remember every place the old information lived, and nobody
+    could do that reliably. In one real estate audit, the same impact figure appeared as three different ranges in
+    three documents: one of the estimates behind it was corrected, and the change did not reach them all.
+  </p>
+  <Stats
+    items={[
+      { value: "3 ranges", label: "for one impact figure, across three documents of the same audit", source: "OP:10; DS:63" },
+      { value: "By hand", label: "every asset, from prep documents to the scope of work, written from the same transcripts", source: "OP:9" },
+    ]}
+  />
+  <p>Real audits showed other ways facts went wrong on the way from a call to a document:</p>
+  <ul>
+    <li>Transcripts misspell the names of the client's systems.</li>
+    <li>The interviewer's words get attributed to the client.</li>
+    <li>Ideas the consultant floated come back as if the client had asked for them.</li>
+    <li>Numbers change during the call itself.</li>
+    <li>The scope of work and its appendix number the same modules differently.</li>
+  </ul>
+</CaseSection>
+
+<CaseSection
+  id="research"
+  standfirst="A pipeline I had already built and used, then a close study of two complete real audits."
+>
+  <ul>
+    <li>
+      In November 2025 I built the first automated version: an n8n pipeline with an intake agent before the call and
+      four analysis agents after it, with an optional consolidation step. It was first used on a yacht management
+      client's audit.
+    </li>
+    <li>
+      For the redesign I went through two complete real audits: their contracts, both final presentations, five
+      discovery transcripts, the questionnaire answers and the demo code.
+    </li>
+    <li>
+      On 29 July 2026 the first build plan went through an internal review, and its findings became version 1.1, the
+      plan the redesign follows.
+    </li>
+  </ul>
+  <Diagram
+    n={1}
+    diagram={firstVersion}
+    caption="The first automated version, November 2025. One transcript in, four analysis files out, with one human checkpoint."
+  />
+</CaseSection>
+
+<CaseSection
+  id="decisions"
+  standfirst="The system holds the facts, every fact keeps its source, a separate checker verifies it, and people keep every judgement."
+>
+  <Decision title="The system holds the facts">
+    <p>
+      Documents stop being the place where numbers live. They become views of one audit graph, each stamped with the
+      data it came from, so a change lands once and flows everywhere.
+    </p>
+  </Decision>
+  <Decision title="Every quote and number keeps its source">
+    <p>
+      Each fact points to the speaker turn, the exact words and the timestamp it came from. A corrected transcript
+      re-links the anchors, and any that cannot be re-linked become a task for a person.
+    </p>
+  </Decision>
+  <Decision title="An independent checker">
+    <p>
+      Every agent that writes facts has a separate checker that defaults to refusal: a quote must be verbatim in the
+      source, and a number must have been said by the client, not suggested by the interviewer.
+    </p>
+  </Decision>
+  <Decision title="Updates without anyone orchestrating them">
+    <p>
+      When new material arrives, newer figures supersede older ones, overwritten ideas are revised or retired, and only
+      the documents that depend on the change are redone. A passing remark never overwrites a number the client
+      confirmed: that becomes a conflict for a person to decide.
+    </p>
+  </Decision>
+  <Decision title="People keep the judgement">
+    <p>
+      Queues can earn autonomy by measured performance, but ROI figures, rankings, report sections, the deck, the scope
+      of work and anything sent to a client are never approved automatically. The system may propose retiring a
+      solution; it never does it.
+    </p>
+  </Decision>
+  <Decision title="Plain language everywhere">
+    <p>
+      Every name a person sees has to pass a zero-training test, agents included: Source Cleaner and Fact Checker, not
+      mythology. Tasks read as sentences, such as "a new figure contradicts a client-confirmed number: pick which one
+      stands".
+    </p>
+  </Decision>
+  <Decision title="A client portal, voice agents and automated client capture" notBuilt>
+    <p>
+      Excluded by decision. The system automates the audit as it already runs, with files uploaded by hand first, and
+      leaves anything client-facing to people.
+    </p>
+  </Decision>
+</CaseSection>
+
+<CaseSection id="solution" standfirst="An audit graph with an update engine at its heart, agents that draft and check, and human gates.">
+  <Diagram
+    n={2}
+    diagram={redesign}
+    caption="The redesign, July 2026. Facts are checked on the way in; only what depends on a change is redone; people approve at the gates."
+  />
+  <h3>Architecture notes</h3>
+  <ul>
+    <li>A Next.js app on Cloudflare Workers, with the database on D1, source files on R2 and jobs on Queues.</li>
+    <li>
+      Agents call the Anthropic API with structured outputs, and the model is chosen by stakes: a fast model for
+      classification, the default for most steps, the most capable for fact checking and drafting reports.
+    </li>
+    <li>
+      Every step is cached on a fingerprint of its inputs and prompt version, so unchanged inputs return identical
+      output and a reviewer sees only the one number that changed.
+    </li>
+    <li>Every agent call is logged with its model, prompt version, tokens, cost and time taken.</li>
+  </ul>
+</CaseSection>
+
+<CaseSection id="outcome" standfirst="Planned and checked against two real audits in July 2026, started, then cancelled.">
+  <p>
+    The plan was complete at the end of July 2026 and was checked against the material of two real audits. The first
+    build sessions ran from 30 July to 1 August 2026: deployment, sign-in, file parsing, and loading both audits'
+    material. Then the project was cancelled.
+  </p>
+</CaseSection>
+
+<CaseSection id="learned" standfirst="Fix where the number lives, not the documents.">
+  <p>
+    Fix where the number lives, not the documents. Once the facts sit in one place, a correction lands once instead
+    of being chased through every file.
+  </p>
+  <p>
+    Automate the updating and keep the judgement with people. Whatever writes a draft should not also check it.
+  </p>
+</CaseSection>
+
+<CaseSection id="role" standfirst="I built the first version, then designed the redesign as its architect and owner.">
+  <p>
+    I built the first automated version in November 2025. For the redesign I was the architect and owner: the build
+    plan names me as its admin, architect and demo owner. The two requirements at its centre were mine: everything stays
+    current when new material arrives, and every name a person sees is in plain language.
+  </p>
+</CaseSection>

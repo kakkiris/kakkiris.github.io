@@ -1,0 +1,28 @@
+---
+// Wording drafted from the documented decisions, waiting for Kerem's own words.
+// Search the source for "<Draft" before launch: none should remain.
+interface Props {
+  note?: string;
+}
+const { note = "Draft for Kerem to rewrite" } = Astro.props;
+---
+
+<div class="draft" data-draft>
+  <p class="draft-label">{note}</p>
+  <slot />
+</div>
+
+<style>
+  .draft {
+    margin: 16px 0;
+    padding: 16px 20px;
+    border: 1px dashed var(--accent);
+    border-radius: 4px;
+  }
+  .draft-label {
+    margin-bottom: 8px;
+    font: 500 12px/1.4 var(--sans);
+    letter-spacing: 0.02em;
+    color: var(--accent);
+  }
+</style>

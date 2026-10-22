@@ -1,0 +1,200 @@
+---
+// Desktop: a sticky rail beside the text that tracks the reader's position and steps
+// aside while a wide screenshot passes beneath it. Phones: a sticky "On this page" bar.
+import { SECTIONS } from "../../data/sections";
+---
+
+<nav class="rail" aria-label="On this page" data-rail>
+  <div class="rail-inner">
+    <p class="rail-label">On this page</p>
+    <ol>
+      {
+        SECTIONS.map((s) => (
+          <li>
+            <a href={`#${s.id}`} data-index-link={s.id}>
+              <span class="n">{s.n}</span>
+              <span>{s.title}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+    <button class="open-all" type="button" data-open-all>Open all sections</button>
+  </div>
+</nav>
+
+<div class="bar" data-bar>
+  <details class="bar-menu">
+    <summary>
+      <span class="bar-label">On this page</span>
+      <span class="bar-current" data-bar-current>{SECTIONS[0].title}</span>
+      <svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true">
+        <path d="M3.5 5.25 7 8.75l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </summary>
+    <ol>
+      {
+        SECTIONS.map((s) => (
+          <li>
+            <a href={`#${s.id}`} data-index-link={s.id}>
+              <span class="n">{s.n}</span>
+              <span>{s.title}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+    <button class="open-all" type="button" data-open-all>Open all sections</button>
+  </details>
+</div>
+
+<style>
+  .rail {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 232px;
+  }
+  .rail-inner {
+    position: sticky;
+    top: 40px;
+    padding-top: 40px;
+    transition: opacity var(--t-small) var(--ease);
+  }
+  .rail.is-covered .rail-inner {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .rail-label {
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  ol {
+    display: grid;
+    gap: 2px;
+    padding: 0;
+    list-style: none;
+  }
+  .rail a,
+  .bar a {
+    position: relative;
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    gap: 8px;
+    padding: 5px 0 5px 12px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color var(--t-press) var(--ease);
+  }
+  .rail a::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 1px;
+    background: var(--rule);
+    transition: background-color var(--t-press) var(--ease);
+  }
+  .rail a:hover,
+  .bar a:hover {
+    color: var(--ink);
+  }
+  .rail a[aria-current="true"],
+  .bar a[aria-current="true"] {
+    color: var(--ink);
+  }
+  .rail a[aria-current="true"]::before {
+    background: var(--accent);
+  }
+  .n {
+    font-family: var(--serif);
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+  .open-all {
+    margin: 16px 0 0 12px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-underline-offset: 4px;
+    cursor: pointer;
+    transition: color var(--t-press) var(--ease);
+  }
+  .open-all:hover {
+    color: var(--ink);
+    text-decoration-color: var(--accent);
+  }
+
+  .bar {
+    display: none;
+  }
+
+  @media (max-width: 1099px) {
+    .rail {
+      display: none;
+    }
+    .bar {
+      display: block;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      margin: 0 calc(-1 * var(--gutter));
+      padding: 0 var(--gutter);
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+    }
+    summary {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 48px;
+      list-style: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    summary::-webkit-details-marker {
+      display: none;
+    }
+    .bar-label {
+      color: var(--muted);
+    }
+    .bar-current {
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    summary svg {
+      color: var(--muted);
+      transition: transform var(--t-small) var(--ease);
+    }
+    details[open] summary svg {
+      transform: rotate(180deg);
+    }
+    .bar ol {
+      padding: 0 0 4px;
+    }
+    .bar .open-all {
+      margin: 4px 0 16px 12px;
+      min-height: 32px;
+    }
+    .bar a {
+      padding: 10px 0;
+      font-size: 15px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rail-inner,
+    summary svg {
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,180 @@
+---
+import { SECTIONS, type SectionId } from "../../data/sections";
+
+interface Props {
+  id: SectionId;
+  /** One line that stays visible when the section is collapsed */
+  standfirst: string;
+}
+
+const { id, standfirst } = Astro.props;
+const section = SECTIONS.find((s) => s.id === id)!;
+---
+
+<section class="case-section" id={id} data-section={section.n} aria-labelledby={`${id}-heading`}>
+  <h2 class="section-heading" id={`${id}-heading`}>
+    <button class="section-toggle" type="button" aria-expanded="true" aria-controls={`${id}-body`} data-section-toggle>
+      <span class="section-n" aria-hidden="true">{section.n}</span>
+      <span class="section-title">{section.title}</span>
+      <svg class="chevron" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+        <path d="M3.5 5.25 7 8.75l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </button>
+  </h2>
+  <p class="standfirst">{standfirst}</p>
+  <div class="section-body" id={`${id}-body`}>
+    <div class="section-inner">
+      <div class="prose">
+        <slot />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .case-section {
+    padding-bottom: 8px;
+    scroll-margin-top: 32px;
+  }
+  /* The rule stays on the text column, clear of the index rail */
+  .case-section::before {
+    content: "";
+    display: block;
+    max-width: 680px;
+    margin-bottom: 40px;
+    border-top: 1px solid var(--rule);
+  }
+  .section-heading {
+    max-width: 680px;
+    font: inherit;
+  }
+  .section-toggle {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+  }
+  .section-n {
+    flex: none;
+    width: 24px;
+    font: 400 17px/1 var(--serif);
+    font-variant-numeric: lining-nums tabular-nums;
+    color: var(--muted);
+  }
+  .section-title {
+    font: 400 clamp(1.625rem, 1.3rem + 1vw, 2rem) / 1.15 var(--serif);
+    font-optical-sizing: auto;
+    letter-spacing: -0.01em;
+    transition: color var(--t-press) var(--ease);
+  }
+  .chevron {
+    flex: none;
+    margin-left: auto;
+    align-self: center;
+    color: var(--muted);
+    transition: transform var(--t-small) var(--ease);
+  }
+  .section-toggle:hover .section-title {
+    color: var(--accent);
+  }
+  .section-toggle[aria-expanded="false"] .chevron {
+    transform: rotate(-90deg);
+  }
+  .standfirst {
+    max-width: 640px;
+    margin: 12px 0 0 40px;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+
+  /* Collapsing: the body animates its row from 0fr to 1fr; hidden content leaves the tab order */
+  .section-body {
+    display: grid;
+    grid-template-rows: 1fr;
+  }
+  .section-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+  .prose {
+    padding: 32px 0 40px 40px;
+  }
+  :global(html.js:not([data-sections-ready])) .section-body,
+  :global(html.js[data-sections-ready]) .case-section:not(.is-open) .section-body {
+    grid-template-rows: 0fr;
+  }
+  :global(html.js:not([data-sections-ready])) .section-inner,
+  :global(html.js[data-sections-ready]) .case-section:not(.is-open) .section-inner {
+    visibility: hidden;
+  }
+  :global(html.js[data-sections-ready]) .section-body {
+    transition: grid-template-rows var(--t-small) var(--ease);
+  }
+  :global(html.js[data-sections-ready]) .section-inner {
+    transition: visibility 0s linear var(--t-small);
+  }
+  :global(html.js[data-sections-ready]) .case-section.is-open .section-inner {
+    transition-delay: 0s;
+  }
+  /* Before the script runs, the lens chosen in the head script decides which sections start open */
+  :global(html.js:not([data-sections-ready])[data-open~="1"]) [data-section="1"] .section-body,
+  :global(html.js:not([data-sections-ready])[data-open~="2"]) [data-section="2"] .section-body,
+  :global(html.js:not([data-sections-ready])[data-open~="3"]) [data-section="3"] .section-body,
+  :global(html.js:not([data-sections-ready])[data-open~="4"]) [data-section="4"] .section-body,
+  :global(html.js:not([data-sections-ready])[data-open~="5"]) [data-section="5"] .section-body,
+  :global(html.js:not([data-sections-ready])[data-open~="6"]) [data-section="6"] .section-body,
+  :global(html.js:not([data-sections-ready])[data-open~="7"]) [data-section="7"] .section-body,
+  :global(html.js:not([data-sections-ready])[data-open~="8"]) [data-section="8"] .section-body {
+    grid-template-rows: 1fr;
+  }
+  :global(html.js:not([data-sections-ready])[data-open~="1"]) [data-section="1"] .section-inner,
+  :global(html.js:not([data-sections-ready])[data-open~="2"]) [data-section="2"] .section-inner,
+  :global(html.js:not([data-sections-ready])[data-open~="3"]) [data-section="3"] .section-inner,
+  :global(html.js:not([data-sections-ready])[data-open~="4"]) [data-section="4"] .section-inner,
+  :global(html.js:not([data-sections-ready])[data-open~="5"]) [data-section="5"] .section-inner,
+  :global(html.js:not([data-sections-ready])[data-open~="6"]) [data-section="6"] .section-inner,
+  :global(html.js:not([data-sections-ready])[data-open~="7"]) [data-section="7"] .section-inner,
+  :global(html.js:not([data-sections-ready])[data-open~="8"]) [data-section="8"] .section-inner {
+    visibility: visible;
+  }
+
+  @media (max-width: 720px) {
+    .case-section {
+      scroll-margin-top: 56px;
+    }
+    .case-section::before {
+      margin-bottom: 32px;
+    }
+    .section-toggle {
+      gap: 12px;
+    }
+    .section-n {
+      width: 20px;
+    }
+    .standfirst {
+      margin-left: 32px;
+      font-size: 16px;
+    }
+    .prose {
+      padding: 24px 0 32px 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .chevron {
+      transition: none;
+    }
+    :global(html.js[data-sections-ready]) .section-body {
+      transition: none;
+    }
+    :global(html.js[data-sections-ready]) .section-inner {
+      transition: none;
+    }
+  }
+</style>

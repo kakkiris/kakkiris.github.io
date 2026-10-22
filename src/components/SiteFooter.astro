@@ -1,0 +1,34 @@
+---
+import { GITHUB_URL, LINKEDIN_URL } from "../data/site";
+---
+
+<footer class="wrap">
+  <div class="site-footer">
+    <p>Kerem Akkiris, London</p>
+    <p class="links">
+      <a class="text-link" href={GITHUB_URL}>GitHub</a>
+      <a class="text-link" href={LINKEDIN_URL}>LinkedIn</a>
+    </p>
+    <p class="colophon">Set in Newsreader and Inter. Built with Astro.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 24px;
+    padding: 32px 0 56px;
+    border-top: 1px solid var(--rule);
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .links {
+    display: flex;
+    gap: 24px;
+  }
+  .colophon {
+    grid-column: 1 / -1;
+    font-size: 13px;
+  }
+</style>

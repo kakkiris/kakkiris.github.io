@@ -1,0 +1,45 @@
+---
+// A verbatim quote, attributed by role. Brackets mark words changed to protect names.
+interface Props {
+  by: string;
+  where: string;
+  source: string;
+}
+const { by, where, source } = Astro.props;
+const text = (await Astro.slots.render("default")).replace(/\s+/g, " ").trim();
+---
+
+<figure class="quote" data-source={source}>
+  <blockquote><p set:html={text} /></blockquote>
+  <figcaption>{by}, {where}</figcaption>
+</figure>
+
+<style>
+  .quote {
+    margin: 32px 0;
+    padding-left: 24px;
+    border-left: 1px solid var(--accent);
+  }
+  blockquote p {
+    font: 400 22px/1.4 var(--serif);
+    font-optical-sizing: auto;
+    font-style: italic;
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+  /* The opening mark hangs in the margin, as in print */
+  blockquote p {
+    text-indent: -0.42em;
+  }
+  blockquote p::before {
+    content: "\201C";
+  }
+  blockquote p::after {
+    content: "\201D";
+  }
+  figcaption {
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+</style>

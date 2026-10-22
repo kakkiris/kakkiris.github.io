@@ -1,0 +1,97 @@
+---
+// TeamForge, a short page. Sources: RPT = the group's project report (A1, Software
+// Engineering, submitted 29 March 2026); CV = Kerem's CV (role, team size, grade).
+---
+
+<section class="short-section">
+  <h2>The problem</h2>
+  <p>
+    In university group work, unequal contribution stays invisible until the deadline, when it is too late to do
+    anything about it. The team framed group assessment as a black box of accountability and aimed the product at
+    making it visible while there is still time to act.
+  </p>
+</section>
+
+<section class="short-section">
+  <h2>What we built</h2>
+  <ul>
+    <li>Structured task logging, so each member records what they did and for how long.</li>
+    <li>
+      A real-time equity indicator. After every logged contribution, a database trigger recalculates the team's balance
+      from the gap between the highest and lowest contributor: under 30% shows green, 30 to 50% amber, above 50% red.
+    </li>
+    <li>Automatic imbalance alerts that move from active to acknowledged to resolved.</li>
+    <li>A confidential flag for raising a concern about the team.</li>
+  </ul>
+  <p class="note">The indicator relies on self-reported hours, a limit the report states plainly.</p>
+</section>
+
+<section class="short-section">
+  <h2>My part</h2>
+  <p>
+    I was Technical Lead in a team of four. I wrote the problem statement and the product vision, built the MVP in
+    Lovable and Supabase, and wrote the core logic with Claude Code: the equity trigger, alert generation and seed data.
+    The project received 81.25%.
+  </p>
+</section>
+
+<section class="short-section">
+  <h2>What the team learned</h2>
+  <figure class="report-quote">
+    <blockquote>
+      <p>
+        The key learning was that scope discipline mattered more than feature count: dropping SDG 8, reclassifying US-09
+        to Must-Have mid-build, and deferring non-essential features produced a smaller but more reliable MVP than the
+        original Sprint 1 backlog envisioned.
+      </p>
+    </blockquote>
+    <figcaption>From the team's project report. US-09 is the automatic imbalance alert.</figcaption>
+  </figure>
+</section>
+
+<style>
+  .short-section {
+    max-width: 680px;
+    padding: 32px 0;
+    border-top: 1px solid var(--rule);
+  }
+  h2 {
+    margin-bottom: 16px;
+    font: 400 clamp(1.5rem, 1.25rem + 0.8vw, 1.875rem) / 1.2 var(--serif);
+    font-optical-sizing: auto;
+  }
+  p,
+  li {
+    font-size: 17px;
+    line-height: 1.7;
+  }
+  ul {
+    display: grid;
+    gap: 8px;
+    padding-left: 20px;
+  }
+  .note {
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .report-quote {
+    padding-left: 24px;
+    border-left: 1px solid var(--accent);
+  }
+  .report-quote p {
+    font: italic 400 21px/1.45 var(--serif);
+    font-optical-sizing: auto;
+  }
+  .report-quote figcaption {
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  @media (max-width: 720px) {
+    p,
+    li {
+      font-size: 16px;
+    }
+  }
+</style>

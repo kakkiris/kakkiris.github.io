@@ -1,0 +1,150 @@
+---
+// From the Universe. Sources: SPEC = FromTheUniverse/PRODUCT_SPEC.md (v2); README and
+// CLAUDE.md in the same repository; git history for dates. No user research yet: the case
+// rests on the product thinking, and says so.
+import CaseSection from "../../components/case/CaseSection.astro";
+import Shot from "../../components/case/Shot.astro";
+import Stats from "../../components/case/Stats.astro";
+import Decision from "../../components/case/Decision.astro";
+import dailyMessage from "../../assets/work/from-the-universe/daily-message.png";
+---
+
+<CaseSection id="context" standfirst="A personal oracle for iPhone: one message a day that feels addressed to you.">
+  <p>
+    From the Universe is built around one personalised message each morning, with a few small moments around it during
+    the day and a reflection at night. The spec is blunt about what it is not: not a quote library, not a meditation
+    app, not a habit tracker.
+  </p>
+  <p>
+    It sits between quote apps and horoscope apps: the personal feel of a horoscope and the depth of philosophy, without
+    the astrology pseudoscience or the uncanny valley of an AI chatbot.
+  </p>
+</CaseSection>
+
+<CaseSection id="problem" standfirst="Quote apps compete on library size; this app bets on an emotional relationship instead.">
+  <p>
+    The apps in this space compete on how many quotes they hold, from 3,000 to more than 22,000. The bet here is that
+    the size of the library is not what brings someone back each morning. What does is the sense that the message was
+    meant for them.
+  </p>
+  <p>
+    There is no user research yet: the app has not launched. This case rests on the product thinking in the spec, and
+    the metrics that will test it are set out below.
+  </p>
+</CaseSection>
+
+<CaseSection id="research" standfirst="A scan of the quote and horoscope apps the product competes with, and their pricing.">
+  <ul>
+    <li>Quote apps compete on library size, from 3,000 to more than 22,000 quotes.</li>
+    <li>
+      Pricing was set against the market at $6.99 a month or $49.99 a year, and justified by the real AI compute each
+      premium user costs.
+    </li>
+    <li>
+      The positioning that came out of it: the intimacy of a horoscope app with the depth of a philosophy app, without
+      the pseudoscience or the chatbot feel.
+    </li>
+  </ul>
+</CaseSection>
+
+<CaseSection
+  id="decisions"
+  standfirst="The journal never leaves the device, personalisation is arithmetic, and the free tier stays generous."
+>
+  <Decision title="The journal never leaves the device">
+    <p>
+      Journal entries are stored locally and never transmitted. There are no accounts, no email and no password, and no
+      third-party analytics. The date of birth is never sent anywhere: only the star sign and an age bracket.
+    </p>
+  </Decision>
+  <Decision title="A backend that remembers nothing">
+    <p>
+      Premium questions go to a serverless backend that stores nothing: no logs, no history. Because nothing leaves the
+      phone, the premium pattern insight is computed on the device.
+    </p>
+  </Decision>
+  <Decision title="Personalisation is arithmetic">
+    <p>
+      Four layers shape each message: who you are, your energy that day, what you save and reflect on, and the time of
+      day. The night reflection weights the next day's content with simple scores, not machine learning, and the star
+      sign is a light seasoning rather than the main flavour.
+    </p>
+  </Decision>
+  <Decision title="A generous free tier">
+    <p>
+      Free users get a daily message, one question and three signs a day, up to ten saves and an unlimited journal. The
+      same static library is the offline fallback for premium. Paywalls appear at clear limits, and free users get more
+      notifications, not fewer.
+    </p>
+  </Decision>
+  <Decision title="Tone as rules">
+    <p>
+      The voice is warm and never a fortune cookie. Words such as "journey" and "manifest" are banned, and the app never
+      says "you should". The same rules feed the AI prompts and the content review.
+    </p>
+  </Decision>
+  <Decision title="Sync across devices, streaks, audio" notBuilt>
+    <p>
+      Left out of the first version on purpose. Cross-device sync is to be built only if users ask for it, and a streak
+      only if it can avoid making anyone feel guilty.
+    </p>
+  </Decision>
+</CaseSection>
+
+<CaseSection id="solution" standfirst="A morning message, small moments through the day, and a night reflection that feeds the next morning.">
+  <p>
+    The daily loop: a morning notification opens the day's message, with a longer reading, and options to save,
+    reflect or share. During the day there are three small moments: ask the universe a question, draw a random sign, or
+    log your energy. At night, a short reflection and an optional journal entry feed tomorrow's message.
+  </p>
+  <Shot
+    n={1}
+    size="phone"
+    src={dailyMessage}
+    alt="The app's home screen in a dark purple theme: a greeting by name, the line today the universe wants you to hear, a one-line message, buttons to save, reflect and share, and a tab bar with Home, Oracle and Vault."
+    caption="The daily message on the home screen."
+    notes={[
+      { x: 40, y: 22, text: "The message opens by name: the morning moment the whole loop is built around." },
+      { x: 30, y: 47.8, text: "One message a day, changing at midnight and cached for offline use." },
+      { x: 10, y: 77, text: "Save it, reflect on it in the private journal, or share it." },
+      { x: 80, y: 10, text: "The crown opens premium: one of the app's clear paywall points." },
+    ]}
+  />
+  <h3>How it was built</h3>
+  <ul>
+    <li>SwiftUI for iOS 17 and up, with a home screen widget, SpriteKit and Metal, and RevenueCat for subscriptions.</li>
+    <li>Premium content comes from serverless functions that call Claude and keep nothing.</li>
+    <li>Built in phases from the spec, each started from a written prompt in Claude Code.</li>
+  </ul>
+</CaseSection>
+
+<CaseSection id="outcome" standfirst="Functionally complete and in launch preparation; the metrics that will judge it are set.">
+  <p>
+    The app is functionally complete. A pre-release audit in July 2026 fixed the widget, the notification scheduler and
+    the personalisation, and the remaining work is App Store preparation.
+  </p>
+  <Stats
+    items={[
+      { value: "560", label: "daily messages in the content library, with 560 oracle answers and 563 random signs", source: "CLAUDE.md:159" },
+      { value: "45%", label: "of users returning daily at day 7: the north star target, not yet measured", source: "SPEC:983" },
+    ]}
+  />
+</CaseSection>
+
+<CaseSection id="learned" standfirst="Deciding where data lives shapes the features.">
+  <p>
+    Deciding where data lives shapes the features. Once the journal could never leave the phone, the pattern insight
+    had to be computed on it.
+  </p>
+  <p>
+    Writing tone down as rules, with examples of what not to say, made it something I could check, in the prompts and
+    in the content review alike.
+  </p>
+</CaseSection>
+
+<CaseSection id="role" standfirst="I built it on my own: spec, content, app and backend.">
+  <p>
+    I designed and built From the Universe on my own: the product spec, the content, the iOS app and the backend,
+    working with Claude Code.
+  </p>
+</CaseSection>

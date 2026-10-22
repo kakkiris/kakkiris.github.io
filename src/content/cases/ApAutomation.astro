@@ -1,0 +1,250 @@
+---
+// AP automation suite. Every number and quote carries a source label (README = the public
+// repository README; T1, T4 = discovery and demo transcripts; S1, S2 = presenter and pitch
+// scripts; K1 to K5 = the demo packs). The label to file map is kept outside the repo.
+// Client-stated volumes are deliberately left out: they are on the client's figure list.
+import CaseSection from "../../components/case/CaseSection.astro";
+import Shot from "../../components/case/Shot.astro";
+import Stats from "../../components/case/Stats.astro";
+import Quote from "../../components/case/Quote.astro";
+import Decision from "../../components/case/Decision.astro";
+import inboxDraft from "../../assets/work/ap-automation/inbox-draft.png";
+import utilityRun from "../../assets/work/ap-automation/utility-bills-run.png";
+import paidOrNot from "../../assets/work/ap-automation/paid-or-not-grid.png";
+import descriptions from "../../assets/work/ap-automation/invoice-description-writer.png";
+import vendors from "../../assets/work/ap-automation/vendor-near-matches.png";
+---
+
+<CaseSection id="context" standfirst="Two accounts payable teams in one property management company, paying very different bills.">
+  <p>
+    The client is a property management company with two AP teams. Family office AP pays invoices for properties held
+    across many holding companies, so every invoice has to land on the right owner. Industrial AP pays the bills of a
+    multi-tenant industrial portfolio, most of them utilities, and nothing is paid until the head of accounting approves
+    the batch.
+  </p>
+  <dl class="users">
+    <div><dt>AP specialists</dt><dd>Key almost every invoice, by hand, into the accounting system.</dd></div>
+    <div><dt>Head of accounting</dt><dd>Approves every payment batch and carries the risk of a missed bill.</dd></div>
+    <div><dt>Accounting lead</dt><dd>Runs the family office side and approves its invoices.</dd></div>
+  </dl>
+</CaseSection>
+
+<CaseSection
+  id="problem"
+  standfirst="Invoices arrive four ways, each one means typing ten fields, and nobody could say whether every bill had been paid."
+>
+  <p>
+    Invoices arrived by email, through a Monday.com approval, from utility portals and in the post. Each meant typing
+    ten fields into Yardi and looking up which holding company owned the property. Utility bills were downloaded one
+    portal at a time and carried no invoice number. Every invoice description was typed by hand, and every new vendor
+    was created twice, once in Yardi and again in Avid.
+  </p>
+  <Stats
+    items={[
+      { value: "4 ways", label: "invoices arrive: email, a Monday.com approval, utility portals and the post", source: "README:17" },
+      { value: "10 fields", label: "typed by hand for every invoice, plus a lookup of the owning company", source: "README:17" },
+      { value: "2 systems", label: "every new vendor is created in, one after the other", source: "README:18" },
+    ]}
+  />
+  <p>
+    The cost that mattered most was not time. Nobody could say whether every bill on a vacant unit had been paid, and a
+    missed utility bill means a service shut off in a tenant's unit.
+  </p>
+  <Quote by="The head of accounting, industrial team" where="discovery session, July 2026" source="T1:56:13">
+    For me the most priority item is making sure that we have paid everything or that services aren't getting shut off.
+    ... Their water gets shut off and then we've got an unhappy tenant and that's an actual impact to our revenue stream.
+  </Quote>
+  <Quote by="The same speaker" where="discovery session, July 2026" source="T1:34:29">
+    The real time suck is reading the invoice and properly putting in this long description and not making typos and
+    doing it in a description naming scheme that we like.
+  </Quote>
+</CaseSection>
+
+<CaseSection
+  id="research"
+  standfirst="A kickoff with both teams, screen-share sessions on the real systems, written follow-ups, then a demo of all eight modules."
+>
+  <ul>
+    <li>A kickoff with both teams in June 2026, then discovery sessions in July with each team sharing its screen.</li>
+    <li>
+      The industrial AP specialist walked through her invoice queue; the family office specialist keyed a test invoice
+      in Yardi; a second industrial session went through the workbook the team uses to track utility bills.
+    </li>
+    <li>Written follow-ups and evidence sheets from both teams in August.</li>
+    <li>
+      I turned the evidence into demo specs, ruling on each open question, and on 9 September 2026 I walked both teams
+      through all eight modules.
+    </li>
+  </ul>
+</CaseSection>
+
+<CaseSection
+  id="decisions"
+  standfirst="A person stays in the loop, code does the arithmetic, every field says where it came from, and the screens show the work."
+>
+  <Decision title="A person stays in the loop">
+    <p>
+      The tools draft, flag and suggest. The specialist submits, the approver approves, and nothing is posted or paid
+      automatically. AP Inbox adds no approval step of its own, because two already exist.
+    </p>
+  </Decision>
+  <Decision title="Code does the arithmetic; the model only reads">
+    <p>
+      Money maths, matching, vacancy logic and status rules are plain code. Model steps only read a document and return
+      checked fields, each with a canned fallback, so the demo runs offline with no API key.
+    </p>
+  </Decision>
+  <Decision title="Honest confidence">
+    <p>
+      In AP Inbox every field shows where it came from: the document, the vendor's history, the parcel database, a
+      default, or typing. In the reconciliation, payments matched by amount and date rather than account number are drawn
+      lighter and say so.
+    </p>
+  </Decision>
+  <Decision title="The meter is the key">
+    <p>
+      Account numbers change with every tenant; the meter does not. So the utility register is keyed on the meter, and
+      every bill can be traced to the unit it serves.
+    </p>
+  </Decision>
+  <Decision title="Show the work, not vanity numbers">
+    <p>
+      No hours-saved counters, animated charts or chat boxes. The head of accounting ranked the shut-off risk above any
+      time saving, and the utility demo runs two months so the room watches the second come out cleaner than the first.
+    </p>
+    <Quote by="The head of accounting, industrial team" where="discovery session, July 2026" source="T1:59:10">
+      This for me, I mean, is worth way more than any time savings that any AI solution could get for downloading bills
+      or anything because it really is affecting like revenue.
+    </Quote>
+  </Decision>
+  <Decision title="The team's own words">
+    <p>
+      Screens are named for the step as the team describes it ("Which bills are paid", "Needs a person"), and no screen
+      says model, pipeline or API.
+    </p>
+  </Decision>
+  <Decision title="Write access, payments and autopay" notBuilt>
+    <p>
+      The utility stack makes no payments, sets up no autopay and logs in to no live portal. The description writer is
+      paste-ready and never writes into Avid. The vendor sync uses no model at all: a person decides every near match.
+    </p>
+  </Decision>
+</CaseSection>
+
+<CaseSection id="solution" standfirst="Eight modules and thirty screens across both teams, running as a live public demo.">
+  <p>
+    Every screen opens with three lines: what happens today, what happens here, and what that protects. A "Connects to"
+    strip names the systems it would read from or write to; nothing is actually connected. The data is invented, from
+    deterministic seed scripts.
+  </p>
+  <Shot
+    n={1}
+    size="narrow"
+    src={inboxDraft}
+    alt="AP Inbox draft for an invoice approved in Monday.com. The vendor is matched from history, the invoice covers nine properties, and each drafted field carries a tag: read from document, or default."
+    caption="AP Inbox. The specialist reviews a pre-filled draft instead of typing."
+    notes={[
+      { x: 27, y: 12.4, lx: 15, ly: 4.8, text: "The invoice keeps its source: here, an approval in Monday.com." },
+      { x: 80, y: 20.7, text: "One invoice naming nine properties becomes one line per property, checked against the total." },
+      { x: 20, y: 46.6, text: "Every field says where it came from: read from the document, or a default." },
+    ]}
+  />
+  <Shot
+    n={2}
+    src={utilityRun}
+    alt="Utility bills to Yardi after a month's run: a checklist of bills received, read, matched and flagged, with export to Yardi blocked by one duplicate, and the upload files listed."
+    caption="Utility bills to Yardi. One run reads the month's bills, matches them to meters and builds the upload."
+    notes={[
+      { x: 1.3, y: 57.5, text: "Each step of the run is listed with its count, so the specialist sees what happened." },
+      { x: 1.3, y: 76.8, text: "A duplicate bill for the same period is caught before it can be paid twice." },
+      { x: 31, y: 88.9, lx: 26, ly: 86.4, text: "Export stays blocked until the duplicate is resolved." },
+      { x: 80, y: 69, text: "The upload files carry the account number in every description." },
+    ]}
+  />
+  <Shot
+    n={3}
+    src={paidOrNot}
+    alt="Paid-or-not reconciliation for one property: a grid of meters by month, with cells marked paid, unpaid, no account on record or tenant-held, flags on some meters, and a legend."
+    caption="Paid-or-not. Every meter, every month, checked against the rent roll."
+    notes={[
+      { x: 35, y: 57.8, lx: 37.4, text: "Unpaid months on a landlord meter: the shut-off risk, on top of the page. Flags beside each meter explain themselves." },
+      { x: 35, y: 77.8, lx: 37.4, text: "Payments matched by amount and date are drawn lighter and say so." },
+      { x: 86.4, y: 53.8, text: "The legend says what each state means, in the team's words." },
+    ]}
+  />
+  <Shot
+    n={4}
+    src={descriptions}
+    alt="Invoice description writer: an invoice PDF beside the fields read from it, each tagged read from PDF or not on invoice, and the description written in the house order."
+    caption="Invoice description writer. The description in the house order, ready to paste."
+    notes={[
+      { x: 87, y: 46.4, text: "Every field is tagged with its source." },
+      { x: 87, y: 78.8, text: "A missing field says so instead of being invented." },
+      { x: 57, y: 87.6, text: "The description follows the house order; the coder pastes it and keeps the judgement." },
+    ]}
+  />
+  <Shot
+    n={5}
+    src={vendors}
+    alt="Vendor near matches: two pairs of vendor records from Yardi and Avid with their normalised names and the reasons they might match, each with buttons to link, create or decide later."
+    caption="Vendor creator to Avid. Two names that might be the same vendor: it does not guess, it asks."
+    notes={[
+      { x: 39.5, y: 61.6, text: "Each pair shows the reasons it might be the same vendor." },
+      { x: 32.5, y: 65.6, text: "A person links, creates or decides later. Nothing is created by guessing." },
+    ]}
+  />
+  <h3>How it was built</h3>
+  <ul>
+    <li>
+      Specs first. Each module began as a demo pack: the data profile, business rules, screens, demo flow and numbered
+      acceptance checks.
+    </li>
+    <li>
+      A small team of agents. Three modules were built in parallel, each by a coordinator that fans out to four
+      subagents: a seed builder, a logic builder, a UI builder and a rehearsal runner that writes one end-to-end check per
+      acceptance check.
+    </li>
+    <li>
+      Guardrails as code: deterministic seeds, identifier formats, an em dash check, and a leak guard for real names and
+      figures whose lists live outside the repository.
+    </li>
+    <li>
+      Hosted on Cloudflare Workers, with a separate demo state for every visitor.
+      <a href="https://github.com/kakkiris/ap-automation-demo">The code is on GitHub</a>.
+    </li>
+  </ul>
+</CaseSection>
+
+<CaseSection id="outcome" standfirst="Demonstrated to both teams in September 2026, reshaped by their feedback, and pitched as a phased build.">
+  <p>
+    On 9 September 2026 I walked both teams through all eight modules. Their feedback changed the plan: the standalone
+    owner lookup folded into AP Inbox, and the description writer will read invoices already in Avid. On 18 September
+    the team pitched a first phase: the meter register, utility bills to Yardi and paid-or-not, then AP Inbox once the
+    client's parcel system is live.
+  </p>
+  <Quote by="The accounting lead, family office team" where="validation demo, September 2026" source="T4:01:06:17">
+    I think we're on the right track again. Once we get to the weeds here, there could be a couple tweaks needed.
+  </Quote>
+</CaseSection>
+
+<CaseSection id="learned" standfirst="Let the model read and let code decide; build for the priority the client names.">
+  <p>
+    Let the model read and let code decide. Every number on screen has a rule behind it, so the demo runs offline and
+    nobody has to trust a guess.
+  </p>
+  <p>
+    Build for the priority the client names, not the easiest metric. The head of accounting ranked the shut-off risk
+    above any time saving, so the screens show the work instead of hours saved.
+  </p>
+</CaseSection>
+
+<CaseSection id="role" standfirst="Specs, product calls and the Claude Code build, plus the validation demo.">
+  <div class="readme">
+    <p>
+      I worked from the discovery sessions with both AP teams, turned them into demo specs with numbered acceptance
+      checks, made the product calls during the build, directed Claude Code through each build session, and led the
+      validation demo with both teams.
+    </p>
+    <p class="note">From the repository README, word for word.</p>
+  </div>
+</CaseSection>

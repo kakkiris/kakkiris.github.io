@@ -1,0 +1,272 @@
+---
+// An annotated screenshot: framed in a thin rule, with numbered accent markers that
+// match the numbered list under the image. Markers appear in sequence when the figure
+// enters view, and hovering a note highlights its marker (src/scripts/case.ts).
+import type { ImageMetadata } from "astro";
+import { Picture } from "astro:assets";
+
+export interface Note {
+  /** Marker position, percent of the image width and height */
+  x: number;
+  y: number;
+  /** Optional end of the 1px leader line, percent */
+  lx?: number;
+  ly?: number;
+  text: string;
+}
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption: string;
+  notes?: Note[];
+  /** Figure number shown in the caption */
+  n: number;
+  /** Portrait screenshots sit beside their notes instead of spanning the column */
+  size?: "wide" | "narrow" | "phone";
+}
+
+const { src, alt, caption, notes = [], n, size = "wide" } = Astro.props;
+const widths = size === "phone" ? [300, 600, 900] : size === "narrow" ? [400, Math.min(800, src.width)] : [680, 1040, 1560, 2080].filter((w) => w <= src.width).concat(src.width > 2080 ? [] : [src.width]).filter((w, i, a) => a.indexOf(w) === i);
+const sizes = size === "phone" ? "(min-width: 721px) 300px, 70vw" : size === "narrow" ? "(min-width: 721px) 400px, calc(100vw - 32px)" : "(min-width: 1100px) 1040px, calc(100vw - 32px)";
+const id = `figure-${n}`;
+---
+
+<figure class:list={["shot", size, { narrow: size === "phone" }]} id={id} data-shot data-reveal>
+  <div class="frame">
+    <Picture
+      src={src}
+      alt={alt}
+      formats={["avif", "webp"]}
+      widths={widths}
+      sizes={sizes}
+      loading="lazy"
+      decoding="async"
+      fetchpriority="low"
+    />
+    {
+      notes.length > 0 && (
+        <div class="markers" aria-hidden="true">
+          <svg class="leaders" viewBox="0 0 100 100" preserveAspectRatio="none">
+            {notes.map((note) =>
+              note.lx !== undefined ? (
+                <line x1={note.x} y1={note.y} x2={note.lx} y2={note.ly ?? note.y} vector-effect="non-scaling-stroke" />
+              ) : null,
+            )}
+          </svg>
+          {notes.map((note, i) => (
+            <span class="marker" data-note={i + 1} style={`--x: ${note.x}%; --y: ${note.y}%; --i: ${i};`}>
+              {i + 1}
+            </span>
+          ))}
+        </div>
+      )
+    }
+  </div>
+  <figcaption>
+    <p class="caption"><span class="caption-n">Figure {n}</span> {caption}</p>
+    {
+      notes.length > 0 && (
+        <ol class="notes">
+          {notes.map((note, i) => (
+            <li data-note={i + 1}>
+              <span class="note-n" aria-hidden="true">
+                {i + 1}
+              </span>
+              <span>{note.text}</span>
+            </li>
+          ))}
+        </ol>
+      )
+    }
+  </figcaption>
+</figure>
+
+<style>
+  .shot {
+    margin: 40px 0 48px -40px;
+    width: calc(100% + 40px);
+    max-width: none;
+  }
+  .frame {
+    position: relative;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .frame :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .markers {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .leaders {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .leaders line {
+    stroke: var(--accent);
+    stroke-width: 1px;
+  }
+  .marker {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font: 600 12px/1 var(--sans);
+    font-variant-numeric: tabular-nums;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+    transition:
+      transform var(--t-press) var(--ease),
+      box-shadow var(--t-press) var(--ease);
+  }
+  :global(.js) .shot:not(.markers-in) .marker,
+  :global(.js) .shot:not(.markers-in) .leaders {
+    opacity: 0;
+  }
+  :global(.js) .shot.markers-in .marker {
+    animation: marker-in var(--t-small) var(--ease) both;
+    animation-delay: calc(var(--i) * 90ms + 120ms);
+  }
+  :global(.js) .shot.markers-in .leaders {
+    animation: fade var(--t-small) var(--ease) both;
+    animation-delay: 120ms;
+  }
+  @keyframes marker-in {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .marker.is-active {
+    transform: scale(1.18);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 28%, transparent);
+  }
+
+  figcaption {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    gap: 16px 48px;
+    padding-top: 16px;
+  }
+  .caption {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+  .caption-n {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .notes {
+    display: grid;
+    gap: 10px;
+    padding: 0;
+    list-style: none;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .notes li {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 12px;
+    padding: 4px 8px 4px 4px;
+    margin-left: -4px;
+    border-radius: 4px;
+    transition: background-color var(--t-press) var(--ease);
+  }
+  .notes li.is-active {
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+  .note-n {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font: 600 11px/1 var(--sans);
+    transition:
+      background-color var(--t-press) var(--ease),
+      color var(--t-press) var(--ease);
+  }
+  .notes li.is-active .note-n {
+    background: var(--accent);
+    color: var(--paper);
+  }
+
+  /* Portrait screenshots: image and notes side by side */
+  .shot.narrow {
+    display: grid;
+    grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
+    gap: 32px 40px;
+    align-items: start;
+  }
+  .shot.phone {
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  }
+  .shot.phone .frame {
+    border-radius: 28px;
+  }
+  .shot.narrow figcaption {
+    grid-template-columns: 1fr;
+    padding-top: 0;
+  }
+
+  @media (max-width: 720px) {
+    .shot,
+    .shot.narrow {
+      margin: 32px 0 40px;
+      width: 100%;
+    }
+    .shot.narrow,
+    .shot.phone {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .shot.phone .frame {
+      max-width: 280px;
+    }
+    figcaption {
+      grid-template-columns: 1fr;
+    }
+    .marker {
+      width: 20px;
+      height: 20px;
+      margin: -10px 0 0 -10px;
+      font-size: 11px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .shot.markers-in .marker,
+    :global(.js) .shot.markers-in .leaders {
+      animation: fade 120ms linear both;
+    }
+    .marker,
+    .marker.is-active {
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

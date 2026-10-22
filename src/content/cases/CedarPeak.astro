@@ -1,0 +1,234 @@
+---
+// Cedar Peak case study. Every number and quote carries a source label (README, SPEC,
+// IDEATION, CALL, PDA, PRICING, DEMO). The label to file map is kept outside the repo,
+// because the source paths carry the real client's name.
+import CaseSection from "../../components/case/CaseSection.astro";
+import Shot from "../../components/case/Shot.astro";
+import Stats from "../../components/case/Stats.astro";
+import Quote from "../../components/case/Quote.astro";
+import Decision from "../../components/case/Decision.astro";
+import costSheet from "../../assets/work/cedar-peak/cost-sheet-check.png";
+import closingPackage from "../../assets/work/cedar-peak/closing-package-check.png";
+import board from "../../assets/work/cedar-peak/pipeline-board.png";
+import stuck from "../../assets/work/cedar-peak/stuck-deals.png";
+---
+
+<CaseSection id="context" standfirst="A closing team of three turns the field's deal paperwork into closed home sales.">
+  <p>
+    The client operates manufactured housing communities across many states. When a home sells, the community manager
+    on site sends a cost sheet for the deal, then a closing package of signed documents. A contract and closing team of
+    three checks every document, records the deal in an Excel sales tracker and in the property system, and closes it.
+    Closed deals then feed commissions, which go to the COO for approval and to HR for payroll.
+  </p>
+  <dl class="users">
+    <div><dt>Contract and closing team</dt><dd>Three people who check, record and close every deal.</dd></div>
+    <div><dt>Community managers</dt><dd>Submit cost sheets and closing packages from the field.</dd></div>
+    <div><dt>COO, HR and payroll</dt><dd>Approve and pay the commissions that closed deals earn.</dd></div>
+  </dl>
+  <p>
+    This case covers the two modules I built inside a seven-solution, thirty-one-screen prototype that walked the
+    client's teams through what an AI audit had recommended for them.
+  </p>
+</CaseSection>
+
+<CaseSection
+  id="problem"
+  standfirst="Every deal entered twice by hand, most closing packages wrong on arrival, and commission checks on the critical path to payroll."
+>
+  <p>
+    Errors surfaced late. The closing team found them when it opened each package, and some only when commissions were
+    checked against every cost sheet at the end of the month. Lot numbers on incoming cost sheets often failed to match
+    the property system, down to a trailing space, so each mismatch meant a manual lookup before the deal could move.
+  </p>
+  <Stats
+    items={[
+      { value: "300 to 350", label: "closed deals a month, each typed by hand into the sales tracker and the property system", source: "SPEC:11,25" },
+      { value: "60 to 70%", label: "of closing packages arrive from the field with errors, confirmed separately by all three team members", source: "SPEC:35" },
+      { value: "A full day", label: "each month to check commissions for the most complex region, where one manager can appear on up to 67 deals", source: "SPEC:47" },
+    ]}
+  />
+  <Quote by="The sales closing and compliance manager" where="discovery call, March 2026" source="CALL:102">
+    Maybe no signature, maybe the lot amount is not listed on the lease, maybe we don't have the concession addendum
+    ... and then we cannot move forward until we get those revised documents.
+  </Quote>
+  <p>
+    Each returned package waits for the buyer to come back and sign again, which is outside the team's control. And
+    commissions sit on the critical path to payroll: a slow check delays the COO's approval and the second payroll of
+    the month.
+  </p>
+  <Quote by="The sales closing and compliance manager" where="discovery call, March 2026" source="CALL:199">
+    That's very manual, and it can take us, like, a full day to do just [one operator's] commission calculations.
+  </Quote>
+</CaseSection>
+
+<CaseSection
+  id="research"
+  standfirst="Pre-call questionnaires, a discovery call with screen shares, and live walkthroughs of the prototype."
+>
+  <p>
+    The audit ran department by department. Before each call, team members answered a questionnaire. On the call, they
+    shared their screens and walked through the real work.
+  </p>
+  <ul>
+    <li>
+      I was on the closing team's call. The manager walked us through the sales tracker, a cost sheet, a closing package
+      and the commission worksheets on screen, including checking an instalment payment with a desk calculator.
+    </li>
+    <li>
+      All three team members had named the closing package error rate in their questionnaires before the call, and a
+      coordinator raised commission checks independently.
+    </li>
+    <li>
+      I turned the department transcripts into ranked pain points and the solution designs the screens follow.
+    </li>
+    <li>The client's teams then saw the prototype in live walkthroughs.</li>
+  </ul>
+</CaseSection>
+
+<CaseSection
+  id="decisions"
+  standfirst="Catch errors where they start, explain every check, show only the exceptions, and leave every approval with a person."
+>
+  <Decision title="Catch errors at the source">
+    <p>
+      The cost sheet is checked the moment the field submits it, and the closing package is checked before close, so
+      mistakes stop before they reach commissions. The field sees a failure while the deal is still in front of them,
+      not days later when the package comes back.
+    </p>
+  </Decision>
+  <Decision title="Every check explains itself">
+    <p>
+      A failed check names the field, the rule and the fix: the VIN needs 17 characters and has 15, or the lot does not
+      exist in that community. The person who made the mistake can see what to fix.
+    </p>
+  </Decision>
+  <Decision title="Exceptions first">
+    <p>
+      The pipeline holds every deal, but the stuck deals report lists only those past the expected time for their stage,
+      sorted by days stuck. The team works the exceptions, not the whole list.
+    </p>
+  </Decision>
+  <Decision title="Approvals stay with people">
+    <p>
+      The checks never approve anything. A clean cost sheet moves on to closing review. A closing package with gaps can
+      only go back to the field: approval stays switched off until it is clean. Commissions still move through closing
+      review, the COO, HR and payroll.
+    </p>
+  </Decision>
+  <Decision title="A no-code field checklist" notBuilt>
+    <p>
+      The audit's quick win for this problem was a pre-submission checklist for the field, which needed no development.
+      I chose to build validation into submission instead.
+    </p>
+    <p>
+      A checklist relies on the field to fill it in, and the audit itself named field adoption as its friction point. It
+      also cannot see the property system, where lot numbers on incoming cost sheets often fail to match.
+    </p>
+  </Decision>
+</CaseSection>
+
+<CaseSection
+  id="solution"
+  standfirst="Field validation, with cost sheet and closing package checks, and a sales pipeline, with a board, deal detail and reports."
+>
+  <p>
+    Both modules run in the browser on invented mock data and connect to nothing. The prototype's job was to walk the
+    client's teams through what the audit had recommended for them.
+  </p>
+  <Shot
+    n={1}
+    src={costSheet}
+    alt="Cost sheet validation screen. A deal cost sheet on the left; on the right, seven checks, three failed: the lot is not found in the community, the VIN is 15 characters instead of 17, and the senior sign-off is missing."
+    caption="Cost sheet check at submission, failing example. Three of seven checks fail, and each says why."
+    notes={[
+      { x: 61, y: 27.6, lx: 64.8, text: "Checks run against the system of record: the lot on the sheet must exist in the property system for that community." },
+      { x: 61, y: 42.7, lx: 64.8, text: "A failure says exactly what is wrong: the VIN needs 17 characters and has 15." },
+      { x: 61, y: 71, lx: 64.8, text: "A missing sign-off is caught before the sheet leaves the field." },
+      { x: 61, y: 80.6, lx: 64.8, text: "Nothing moves to closing review until every check passes. Each failed check opens to a suggested fix." },
+    ]}
+  />
+  <Shot
+    n={2}
+    src={closingPackage}
+    alt="Closing package validation results. Five of seven required documents are present, with the bill of sale and disclosure statement missing. A field-by-field comparison shows the contract price does not match the cost sheet. Send back to field is active and approve is disabled."
+    caption="Closing package check before close. Two documents are missing and one price does not match the cost sheet."
+    notes={[
+      { x: 92.5, y: 12.4, text: "Missing documents are named, with why each is required." },
+      { x: 93.8, y: 61.8, text: "Each field read from the documents is compared with the cost sheet." },
+      { x: 3.2, y: 76.1, text: "The mismatch explains itself: which value, from which document, and by how much." },
+      { x: 58.4, y: 93.1, text: "With gaps open, the only way forward is back to the field. Approval stays switched off." },
+    ]}
+  />
+  <Shot
+    n={3}
+    src={board}
+    alt="Sales pipeline board. Summary counts across the top, including stuck deals, then filters, then deal cards in stage columns from cost sheet received to closed, each showing days in stage."
+    caption="Pipeline board. Every deal in one place, in place of the spreadsheet tracker."
+    notes={[
+      { x: 1.6, y: 58, text: "Each deal sits in one stage, from cost sheet received through to title transfer." },
+      { x: 14, y: 77.3, lx: 16.6, text: "Each card shows how long the deal has sat in its stage." },
+      { x: 76, y: 12.6, text: "Stuck deals are counted at the top, beside the month's progress." },
+    ]}
+  />
+  <Shot
+    n={4}
+    src={stuck}
+    alt="Stuck deals report listing three deals, each with days in stage, the stage threshold of seven days, and a flag showing how many days over."
+    caption="Stuck deals report. Only the exceptions, sorted by days stuck."
+    notes={[
+      { x: 3.1, y: 42.8, text: "Only deals past the expected time for their stage appear here." },
+      { x: 96.6, y: 59.3, text: "Each flag carries its reason: days in stage against the stage's threshold." },
+    ]}
+  />
+  <p>
+    The reports also replace the email of pending deals the closing team wrote to the field by hand each morning.
+  </p>
+  <h3>How it was built</h3>
+  <ul>
+    <li>Front end only. Every screen runs on typed mock data, and nothing is connected to a real system.</li>
+    <li>Built with Claude Code over four days. Every commit in the original history was co-authored with Claude.</li>
+    <li>Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4, Recharts and Framer Motion.</li>
+    <li>
+      Anonymised for the public copy: the operator, its people, communities and figures are invented.
+      <a href="https://github.com/kakkiris/mhc-operations-ai-demo">The code is on GitHub</a>.
+    </li>
+  </ul>
+</CaseSection>
+
+<CaseSection id="outcome" standfirst="My pipeline module became the first milestone of a signed six-figure product build.">
+  <p>
+    After the walkthroughs, the client signed a five-month product build: eleven modules in two solution streams,
+    delivered in five monthly milestones. Module 1, the home sales pipeline, ships in the first milestone. Commission
+    calculation and exception routing is Module 4.
+  </p>
+  <Stats
+    items={[
+      { value: "Module 1", label: "the home sales pipeline, delivered in the first milestone", source: "PDA:5" },
+      { value: "11 modules", label: "in two solution streams", source: "PDA:4" },
+      { value: "5 months", label: "of build, one milestone each month", source: "PDA:3.2,5" },
+    ]}
+  />
+</CaseSection>
+
+<CaseSection id="learned" standfirst="A check that names its own fix beats one that only blocks.">
+  <p>
+    A check that names its own fix is worth more than one that only blocks, because the person who made the mistake
+    can correct it where it started.
+  </p>
+  <p>
+    The cheapest fix in an audit is not always the right build. The checklist needed no code, but the errors that
+    mattered sat in data the field could not see.
+  </p>
+</CaseSection>
+
+<CaseSection id="role" standfirst="Two people built the prototype. I built two of its modules and worked on the audit behind it.">
+  <div class="readme">
+    <p>
+      Two people built this app. I built the field validation and sales pipeline modules: the deal cost sheet check, the
+      closing package check, the pipeline board, deal detail, and reports. I also worked on the audit behind the suite,
+      turning department discovery transcripts into ranked pain points and the solution designs these screens follow.
+      My colleague built the app shell and the other modules.
+    </p>
+    <p class="note">From the repository README, word for word.</p>
+  </div>
+</CaseSection>

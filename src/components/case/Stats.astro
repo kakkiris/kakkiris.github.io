@@ -1,0 +1,42 @@
+---
+// A row of figures from the evidence. Each item carries its source for the final check table.
+interface Props {
+  items: { value: string; label: string; source: string }[];
+}
+const { items } = Astro.props;
+---
+
+<dl class="stats">
+  {
+    items.map((item) => (
+      <div class="stat" data-source={item.source}>
+        <dt>{item.value}</dt>
+        <dd>{item.label}</dd>
+      </div>
+    ))
+  }
+</dl>
+
+<style>
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 24px 32px;
+    margin: 32px 0;
+    padding: 24px 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  dt {
+    font: 400 32px/1.1 var(--serif);
+    font-optical-sizing: auto;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  dd {
+    margin: 8px 0 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+</style>
